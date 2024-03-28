@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let wrongCount = 0;
     let mistakesCount = 0;
     let timerInterval;
+    let gameOver = false; 
   
-
     function generateRandomWord() {
       const words = ["apple", "banana", "orange", "grape", "strawberry"];
       return words[Math.floor(Math.random() * words.length)];
@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleKeyPress(event) {
+      if (gameOver) return; 
+      
       const keyPressed = event.key.toLowerCase();
       const currentLetter = currentWord[currentLetterIndex];
   
@@ -40,6 +42,11 @@ document.addEventListener("DOMContentLoaded", function () {
         wordElement.children[currentLetterIndex].classList.add("w");
         mistakesCount++;
         mistakesCountElement.textContent = mistakesCount;
+
+        
+        if (mistakesCount >= 3) {
+          endGame();
+        }
       }
     }
   
@@ -52,10 +59,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 1000);
     }
   
- 
+    function endGame() {
+      gameOver = true; 
+      clearInterval(timerInterval); 
+      document.removeEventListener("keypress", handleKeyPress); 
+      alert("Game Over! You made too many mistakes."); 
+    }
+  
     updateWord();
     startTimer();
   
     document.addEventListener("keypress", handleKeyPress);
-  });
-  
+});
